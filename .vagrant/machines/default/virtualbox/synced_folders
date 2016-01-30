@@ -1,1 +1,0 @@
-{"virtualbox":{"/var/www/html":{"create":true,"group":"www-data","owner":"www-data","guestpath":"/var/www/html","hostpath":"D:/xampp/htdocs","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/Users/Vuong/server/ubuntu1404","disabled":false,"__vagrantfile":true}}}
