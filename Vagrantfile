@@ -66,9 +66,7 @@ Vagrant.configure(2) do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
   
-	echo "Updating PHP repository"
-	sudo apt-get install python-software-properties build-essential -y
-	sudo add-apt-repository ppa:ondrej/php5 -y
+	echo "Updating repository"
 	sudo apt-get update
 	
 	# Git
@@ -91,6 +89,36 @@ Vagrant.configure(2) do |config|
 	
 	echo "Installing PHP extensions"
 	sudo apt-get install curl php5-curl php5-gd php5-mcrypt php5-mysql -y
+	
+	sudo rm /etc/nginx/sites-available/default
+	sudo touch /etc/nginx/sites-available/default
+
+sudo cat >> /etc/nginx/sites-available/default <<'EOF'
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server ipv6only=on;
+
+	root /usr/share/nginx/html;
+	index index.php index.html index.htm;
+
+	server_name localhost;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+	error_page 404 /404.html;
+	error_page 500 502 503 504 /50x.html;
+	location = /50x.html {
+		root /usr/share/nginx/html;
+	}
+
+	location ~ \.php$ {
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+		include fastcgi_params;
+	}
+}
+EOF
 	
 	sudo service nginx restart
 	sudo service php5-fpm restart
